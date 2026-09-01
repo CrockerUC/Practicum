@@ -4,21 +4,14 @@ import static java.nio.file.StandardOpenOption.CREATE;
 void main()
 {
     Scanner pipe = new Scanner(System.in);
-
     JFileChooser chooser = new JFileChooser();
-
-    File workingDirectory =
-            new File(System.getProperty("user.dir"));
-
+    File workingDirectory = new File(System.getProperty("user.dir"));
     chooser.setCurrentDirectory(workingDirectory);
-
     System.out.println("Select a Person data file.");
-
     if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
     {
         File selectedFile = chooser.getSelectedFile();
         Path file = selectedFile.toPath();
-
         try
         {
             InputStream in = new BufferedInputStream(Files.newInputStream(file, CREATE));
@@ -30,7 +23,6 @@ void main()
             while ((rec = reader.readLine()) != null)
             {
                 String[] fields = rec.split(",");
-
                 if (fields.length == 5)
                 {
                     String id = fields[0].trim();

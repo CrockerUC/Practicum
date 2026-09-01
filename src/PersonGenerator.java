@@ -12,19 +12,13 @@ void main() {
         String lastName = SafeInput.getNonZeroLenString(pipe, "Enter Last Name");
         String title = SafeInput.getNonZeroLenString(pipe, "Enter Title");
         int yearOfBirth = SafeInput.getInt(pipe, "\nEnter Year of Birth");
-
-        String record = String.format("%s, %s, %s, %s, %d",
-                id, firstName, lastName, title, yearOfBirth);
-
+        String record = String.format("%s, %s, %s, %s, %d", id, firstName, lastName, title, yearOfBirth);
         records.add(record);
-
         System.out.println("\nRecord added:");
         System.out.println(record);
-
         more = SafeInput.getYNConfirm(pipe, "Would you like to enter another person?");
     }
-    String fileName = SafeInput.getNonZeroLenString(pipe,
-            "Enter the name of the file to save");
+    String fileName = SafeInput.getNonZeroLenString(pipe, "Enter the name of the file to save");
     Path file = Paths.get(fileName);
     try
     {
