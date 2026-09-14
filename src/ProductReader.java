@@ -1,58 +1,73 @@
-import javax.swing.*;
-
+import javax.swing.JFileChooser;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import static java.nio.file.StandardOpenOption.CREATE;
 
-void main() {
-    Scanner pipe = new Scanner(System.in);
-    JFileChooser chooser = new JFileChooser();
-    File workingDirectory = new File(System.getProperty("user.dir"));
-    chooser.setCurrentDirectory(workingDirectory);
-    IO.println("Select a Product data file.");
-    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+public class ProductReader
+{
+    public static void main(String[] args)
     {
-        File selectedFile = chooser.getSelectedFile();
-        Path file = selectedFile.toPath();
-        try
+        JFileChooser chooser = new JFileChooser();
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        chooser.setCurrentDirectory(workingDirectory);
+
+        System.out.println("Select a Product data file.");
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
         {
-            InputStream in = new BufferedInputStream(Files.newInputStream(file, CREATE));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            IO.println();
-            System.out.printf("%-10s %-15s %-30s %10s%n", "ID#", "Name", "Description", "Cost");
-            IO.println("================================================================");
-            String rec;
-            while ((rec = reader.readLine()) != null)
+            File selectedFile = chooser.getSelectedFile();
+            Path file = selectedFile.toPath();
+
+            ArrayList<Product> products = new ArrayList<>();
+
+            try
             {
-                String[] fields = rec.split(",");
-                if (fields.length == 4)
+                InputStream in = new BufferedInputStream(Files.newInputStream(file, CREATE));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+                String rec;
+
+                while ((rec = reader.readLine()) != null)
                 {
-                    String id = fields[0].trim();
-                    String name = fields[1].trim();
-                    String description = fields[2].trim();
-                    double cost = Double.parseDouble(fields[3].trim());
-                    System.out.printf("%-10s %-15s %-30s %10.1f%n", id, name, description, cost);
+                    String[] fields = rec.split(",");
+                    if (fields.length == 4)
+                    {
+                        String ID = fields[0].trim();
+                        String name = fields[1].trim();
+                        String description = fields[2].trim();
+                        double cost = Double.parseDouble(fields[3].trim());
+
+                        Product product = new Product(ID, name, description, cost);
+                        products.add(product);
+                    }
+                    else
+                    {
+                        System.out.println("Found a record that may be corrupt:");
+                        System.out.println(rec);
+                    }
                 }
-                else
+                reader.close();
+
+                System.out.println();
+                System.out.printf("%-10s %-15s %-30s %10s%n", "ID#", "Name", "Description", "Cost");
+
+                System.out.println("==========================================================================");
+                for (Product product : products)
                 {
-                    IO.println("Found a record that may be corrupt:");
-                    IO.println(rec);
+                    System.out.printf("%-10s %-15s %-30s %10.2f%n", product.getIDNum(), product.getName(), product.getDescription(), product.getCost());
                 }
+                System.out.println("\nData file read!");
             }
-            reader.close();
-            IO.println("\nData file read!");
+            catch (IOException e)
+            {
+                System.out.println("Error reading file.");
+            }
         }
-        catch (FileNotFoundException e)
+        else
         {
-            IO.println("File not found!");
-        }
-        catch (IOException e)
-        {
-            IO.println("Error reading file.");
+            System.out.println("No file was selected.");
+            System.out.println("Run the program again and select a file.");
         }
     }
-    else
-    {
-        IO.println("No file was selected.");
-        IO.println("Run the program again and select a file.");
-    }
-    pipe.close();
 }

@@ -210,7 +210,7 @@ public class SafeInputObject
      * of the row line up with the series of asterisks on the first and third lines.
      * @param msg the message to display
      */
-    public static void prettyHeader(String msg)
+    public void prettyHeader(String msg)
     {
         int width = 60;
         for(int i = 0; i < width; i++) System.out.print("*");
